@@ -1,3 +1,13 @@
+function removeActiveClass(){
+    const activeButtons = document.getElementsByClassName("active")
+    for(let btn of activeButtons){
+        btn.classList.remove("active")
+    }
+    console.log(activeButtons)
+}
+
+
+
 function loadCategories(){
     //1. fetch the data
     fetch("https://openapi.programming-hero.com/api/phero-tube/categories")
@@ -13,15 +23,43 @@ function loadVideos(){
 }
 // {category_id: '1001', video_id: 'aaad', thumbnail: 'https://i.ibb.co/f9FBQwz/smells.jpg', title: 'Smells Like Teen Spirit', authors: Array(1), …}
 
+const loadCategoryVideos=(id)=>{
+
+ const url = `
+ https://openapi.programming-hero.com/api/phero-tube/category/${id}`;
+ console.log(url)
+ fetch(url)
+ .then((res)=>res.json())
+ .then((data)=>{
+    removeActiveClass()
+    const clickedButton = document.getElementById(`btn-${id}`);
+    clickedButton.classList.add("active");
+    
+    displayVideos(data.category)
+ })
+}
 
 
 
-loadVideos()
 const displayVideos = (videos) =>{
     console.log(videos)
     // videos ekhane recieve hoise
     // 1.get the container
     const videoContainer = document.getElementById('video-container');
+    videoContainer.innerHTML = "";
+     if(videos.length == 0){
+        videoContainer.innerHTML = `
+        <div class="col-span-full flex flex-col justify-center items-center py-20">
+            <img src="design/Icon.png" alt="">
+            <h2 class="text-2xl text-slate-950 font-bold">Oops!! Sorry, There is no content here</h2>
+        </div>
+        `;
+        return;
+     }
+
+
+
+
     // loop operation on array of object
     videos.forEach(video =>{
         // console.log(video);
@@ -71,11 +109,11 @@ function displayCategories(categories){
       // create element
     const categoryDiv = document.createElement('div');
     categoryDiv.innerHTML = `
-<button class="bg-slate-300 px-4 py-1 rounded-md text-base text-slate-950 font-medium hover:bg-red-400 hover:text-white ">${cat.category}</button>
+<button id="btn-${cat.category_id}" onclick="loadCategoryVideos(${cat.category_id})" class="bg-slate-300 px-4 py-1 rounded-md text-base text-slate-950 font-medium hover:bg-[#ff1f3d] hover:text-white ">${cat.category}</button>
     `
     // append the element
     categoryContainer.append(categoryDiv);
     }
     
 }
-loadCategories()
+loadCategories();
