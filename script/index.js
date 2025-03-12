@@ -38,7 +38,47 @@ const loadCategoryVideos=(id)=>{
     displayVideos(data.category)
  })
 }
+const loadVideoDetails =(videoID) => {
+    console.log(videoID)
+    const url = `https://openapi.programming-hero.com/api/phero-tube/video/${videoID}`;
+    fetch(url)
+    .then((res)=>res.json())
+    .then((data)=>displayVideoDetails(data.video))
 
+}
+const displayVideoDetails =(video) =>{
+    console.log(video)
+    document.getElementById("video_details").showModal();
+    const detailsContainer = document.getElementById("details-container");
+    detailsContainer.innerHTML = `
+    <div class="card   shadow-sm">
+            <figure class="relative">
+              <img class="w-full h-[150px] object-cover"
+                src="${video.thumbnail}" />
+                <span class="absolute bottom-2 right-2 text-white bg-black ps-2 text-sm rounded">3hrs 56 min ago</span>
+            </figure>
+            
+            <div class=" flex gap-3 px-0 py-5">
+              <div class="profile">
+                <div class="avatar">
+                    <div class="ring-primary ring-offset-base-100 w-6 rounded-full ring ring-offset-2">
+                      <img src="${video.authors[0].profile_picture
+                      }" />
+                    </div>
+                  </div>
+              </div>
+              <div class="intro">
+                <h2 class="text-sm font-semibold">${video.title}</h2>
+                <p class="flex gap text-sm text-gray-400"><img class="w-5 h-5"  src="https://img.icons8.com/?size=96&id=98A4yZTt9abw&format=png" alt="">${video.authors[0].profile_name
+                      }</p>
+                <p class="text-gray-400 text-sm">${video.others.views}</p>
+              </div>
+              
+            </div>
+            
+          </div>
+    `
+}
 
 
 const displayVideos = (videos) =>{
@@ -90,6 +130,9 @@ const displayVideos = (videos) =>{
               </div>
               
             </div>
+            <button onclick=loadVideoDetails('${video.
+                video_id
+                }') class="btn btn-block">Show Details</button>
           </div>
     `
     videoContainer.append(videoCard)
